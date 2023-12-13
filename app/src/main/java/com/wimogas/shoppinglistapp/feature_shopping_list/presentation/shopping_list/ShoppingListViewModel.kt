@@ -3,18 +3,18 @@ package com.wimogas.shoppinglistapp.feature_shopping_list.presentation.shopping_
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.wimogas.shoppinglistapp.ShoppingListApp
 import com.wimogas.shoppinglistapp.feature_shopping_list.domain.model.Item
 import com.wimogas.shoppinglistapp.feature_shopping_list.domain.use_case.ShoppingListUseCases
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ShoppingListViewModel @Inject constructor(
+class ShoppingListViewModel(
     private val shoppingListUseCases: ShoppingListUseCases
 ) : ViewModel() {
 
@@ -55,6 +55,7 @@ class ShoppingListViewModel @Inject constructor(
                     shoppingListUseCases.addItem(updatedItem)
                 }
             }
+            else -> {}
         }
     }
 
@@ -66,6 +67,21 @@ class ShoppingListViewModel @Inject constructor(
             )
         }
         .launchIn(viewModelScope)
+    }
+
+    companion object {
+
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
+                return ShoppingListViewModel(
+                    ShoppingListApp.appModule.shoppingListUseCases
+                ) as T
+            }
+        }
     }
 
 }

@@ -5,18 +5,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.wimogas.shoppinglistapp.ShoppingListApp
 import com.wimogas.shoppinglistapp.feature_shopping_list.domain.model.InvalidItemException
 import com.wimogas.shoppinglistapp.feature_shopping_list.domain.model.Item
 import com.wimogas.shoppinglistapp.feature_shopping_list.domain.use_case.ShoppingListUseCases
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class EditItemViewModel @Inject constructor(
+
+class EditItemViewModel (
     private val itemUseCases: ShoppingListUseCases,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
@@ -86,5 +88,22 @@ class EditItemViewModel @Inject constructor(
         data object SaveItem: UiEvent()
     }
 
+    companion object {
 
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
+
+                val savedStateHandle = extras.createSavedStateHandle()
+
+                return EditItemViewModel(
+                    ShoppingListApp.appModule.shoppingListUseCases,
+                    savedStateHandle
+                ) as T
+            }
+        }
+    }
 }

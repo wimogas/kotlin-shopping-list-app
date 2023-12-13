@@ -16,9 +16,7 @@ import com.wimogas.shoppinglistapp.common.presentation.ui.theme.ShoppingListAppT
 import com.wimogas.shoppinglistapp.feature_shopping_list.presentation.edit_item.EditItemScreen
 import com.wimogas.shoppinglistapp.feature_shopping_list.presentation.routes.Router
 import com.wimogas.shoppinglistapp.feature_shopping_list.presentation.shopping_list.ShoppingListScreen
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

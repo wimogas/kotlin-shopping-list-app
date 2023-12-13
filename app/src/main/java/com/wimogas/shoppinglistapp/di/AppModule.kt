@@ -1,6 +1,6 @@
 package com.wimogas.shoppinglistapp.di
 
-import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.wimogas.shoppinglistapp.feature_shopping_list.data.data_source.ShoppingListDatabase
 import com.wimogas.shoppinglistapp.feature_shopping_list.data.repository.ShoppingListRepositoryImpl
@@ -10,39 +10,33 @@ import com.wimogas.shoppinglistapp.feature_shopping_list.domain.use_case.DeleteI
 import com.wimogas.shoppinglistapp.feature_shopping_list.domain.use_case.GetItem
 import com.wimogas.shoppinglistapp.feature_shopping_list.domain.use_case.GetItems
 import com.wimogas.shoppinglistapp.feature_shopping_list.domain.use_case.ShoppingListUseCases
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-object AppModule {
-    @Provides
-    @Singleton
-    fun provideShoppingListDatabase(app: Application): ShoppingListDatabase {
-        return Room.databaseBuilder(
-            app,
+interface AppModule {
+    val shoppingListDatabase: ShoppingListDatabase
+    val shoppingListRepository: ShoppingListRepository
+    val shoppingListUseCases: ShoppingListUseCases
+}
+
+class AppModuleImpl (private val appContext: Context): AppModule {
+
+    override val shoppingListDatabase: ShoppingListDatabase by lazy {
+        Room.databaseBuilder(
+            appContext,
             ShoppingListDatabase::class.java,
             ShoppingListDatabase.DATABASE_NAME
         ).build()
     }
 
-    @Provides
-    @Singleton
-    fun provideShoppingListRepository(db: ShoppingListDatabase): ShoppingListRepository {
-        return ShoppingListRepositoryImpl(db.shoppingListDao)
+    override val shoppingListRepository: ShoppingListRepository by lazy {
+        ShoppingListRepositoryImpl(shoppingListDatabase.shoppingListDao)
     }
 
-    @Provides
-    @Singleton
-    fun provideShoppingListUseCases(repository: ShoppingListRepository) : ShoppingListUseCases {
-        return ShoppingListUseCases(
-            getItems = GetItems(repository),
-            deleteItem = DeleteItem(repository),
-            addItem = AddItem(repository),
-            getItem = GetItem(repository)
+    override val shoppingListUseCases: ShoppingListUseCases by lazy {
+        ShoppingListUseCases(
+            getItems = GetItems(shoppingListRepository),
+            deleteItem = DeleteItem(shoppingListRepository),
+            addItem = AddItem(shoppingListRepository),
+            getItem = GetItem(shoppingListRepository)
         )
     }
 }
