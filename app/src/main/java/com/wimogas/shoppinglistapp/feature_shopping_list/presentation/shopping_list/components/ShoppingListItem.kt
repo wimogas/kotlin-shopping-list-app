@@ -32,13 +32,13 @@ fun ShoppingListItem(
     onDeleteClick: () -> Unit,
     onChecked: (Boolean) -> Unit,
 ) {
-    var color = if (item.checked) Color.DarkGray.copy(alpha = 0.5f) else Color.DarkGray
-    var style = if (item.checked) TextStyle(textDecoration = TextDecoration.LineThrough) else TextStyle(textDecoration = TextDecoration.None)
+    val color = if (item.checked) Color.DarkGray.copy(alpha = 0.8f) else Color.DarkGray
+    val style = if (item.checked) TextStyle(textDecoration = TextDecoration.LineThrough) else TextStyle(textDecoration = TextDecoration.None)
     Box(
         modifier = modifier
     ) {
         Row(
-        modifier = Modifier.fillMaxSize().padding(bottom = 32.dp),
+        modifier = Modifier.fillMaxSize().padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
